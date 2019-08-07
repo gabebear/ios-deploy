@@ -122,7 +122,7 @@ const int exitcode_app_crash = 254;
         {                                                                       \
             const char* msg = get_error_message(err);                           \
             NSString *description = msg ? [NSString stringWithUTF8String:msg] : @"unknown."; \
-            NSLogJSON(@{@"Event": @"Error", @"Code": @(err), @"Status": description}); \
+            NSLogJSON(@{@"Event": @"Error", @"Code": @((unsigned int)err), @"Status": description}); \
             on_error(@"Error 0x%x: %@ " #call, err, description);               \
         }                                                                       \
     } while (false);
@@ -553,7 +553,7 @@ void mount_developer_image(AMDeviceRef device) {
     CFDictionaryRef options = CFDictionaryCreate(NULL, (const void **)&keys, (const void **)&values, 2, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
     CFRelease(sig_data);
 
-    int result = AMDeviceMountImage(device, image_path, options, &mount_callback, 0);
+    unsigned int result = (unsigned int)AMDeviceMountImage(device, image_path, options, &mount_callback, 0);
     if (result == 0) {
         NSLogOut(@"[ 95%%] Developer disk image mounted successfully");
     } else if (result == 0xe8000076 /* already mounted */) {
